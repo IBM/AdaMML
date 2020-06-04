@@ -287,14 +287,6 @@ def validate(data_loader, model, criterion, gpu_id=None, eval_criterion=accuracy
 
 
 def compute_policy_loss(penalty_type, selection, cost_weights, gammas, cls_logits, cls_targets):
-    """
-    :param penalty_type (str):
-    :param selection: NxSxM
-    :param cost_weights: M
-    :param gammas: M
-    :param correctness: N
-    :return:
-    """
     num_modality = selection.shape[-1]
     policy_loss = torch.tensor(0.0, dtype=selection.dtype, device=selection.device)
     if penalty_type == 'mean':
@@ -311,7 +303,7 @@ def compute_policy_loss(penalty_type, selection, cost_weights, gammas, cls_logit
             # pl: Nx1
             loss = w * torch.mean(correctness * pl)
             policy_loss = policy_loss + loss
-        policy_loss = policy_loss + torch.mean((torch.ones_like(correctness) - correctness) * gammas[0])
+        policy_loss = policy_loss + torch.mean((torch.ones_like(correctness) - correctness) * gammas)
     return policy_loss
 
 
@@ -338,7 +330,6 @@ def train_adamml(data_loader, model, criterion, optimizer, p_optimizer, epoch, m
     cost_weights = [0.0] * len(modality) if cost_weights is None else cost_weights
     cost_weights = torch.tensor(cost_weights).cuda()
 
-    gammas = [0.0] * len(modality) if gammas is None else gammas
     gammas = torch.tensor(gammas).cuda()
     if gpu_id is None or gpu_id == 0:
         disable_status_bar = False

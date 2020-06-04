@@ -1,3 +1,20 @@
+
+"""
+For each dataset, the following fields are required:
+  - num_classes: number of classes
+  - train_list_name: the filename of train list
+  - val_list_name: the filename of val list
+  - filename_separator: the separator used in train/val/test list
+  - image_tmpl: the template of images in the video folder
+  - filter_video: the threshold to remove videos whose frame number is less than this value
+
+Those are optional:
+  - test_list_name: the filename of test list
+  - label_file: name of classes, used to map the prediction from a model to real label name
+
+"""
+
+
 DATASET_CONFIG = {
     'activitynet': {
         'num_classes': 200,
@@ -54,10 +71,9 @@ def get_dataset_config(dataset):
     image_tmpl = ret['image_tmpl']
     filter_video = ret.get('filter_video', 0)
     label_file = ret.get('label_file', None)
-    multilabel = ret.get('multilabel', False)
 
     return num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, \
-           image_tmpl, filter_video, label_file, multilabel
+           image_tmpl, filter_video, label_file
 
 
 if __name__ == "__main__":

@@ -3,7 +3,6 @@ import time
 import json
 import warnings
 
-import torch.nn as nn
 from torch.nn import functional as F
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
@@ -11,14 +10,13 @@ import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
-import torchsummary
 
 from tqdm import tqdm
 
 from models import build_model
-from utils.utils import build_dataflow, extract_total_flops_params, AverageMeter, accuracy, actnet_acc
+from utils.utils import build_dataflow, AverageMeter, actnet_acc
 from utils.video_transforms import *
-from utils.video_dataset import MultiVideoDataSetLMDB, MultiVideoDataSet, MultiVideoDataSetOnline
+from utils.video_dataset import MultiVideoDataSet
 from utils.dataset_config import get_dataset_config
 from opts import arg_parser
 
@@ -73,10 +71,9 @@ def main():
     global args
     parser = arg_parser()
     args = parser.parse_args()
-    # TODO: for compatibility
     cudnn.benchmark = True
 
-    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file, multilabel = get_dataset_config(args.dataset, args.use_lmdb)
+    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file, multilabel = get_dataset_config(args.dataset)
 
     data_list_name = val_list_name if args.evaluate else test_list_name
 
@@ -101,7 +98,6 @@ def main():
     model, arch_name = build_model(args, test_mode=True)
     mean = [model.mean(x) for x in args.modality]
     std = [model.std(x) for x in args.modality]
-
 
     model = model.cuda()
     model.eval()
@@ -154,12 +150,7 @@ def main():
     print("Number of crops: {}".format(args.num_crops))
     print("Number of clips: {}, offset from center with {}".format(args.num_clips, sample_offsets))
 
-    if args.use_lmdb:
-        video_data_cls = MultiVideoDataSetLMDB
-    elif args.use_pyav:
-        video_data_cls = MultiVideoDataSetOnline
-    else:
-        video_data_cls = MultiVideoDataSet
+    video_data_cls = MultiVideoDataSet
     val_dataset = video_data_cls(args.datadir, data_list_name, args.groups * args.num_segments, args.frames_per_group,
                                  num_clips=args.num_clips, modality=args.modality,
                                  image_tmpl=image_tmpl, dense_sampling=args.dense_sampling,
@@ -257,7 +248,7 @@ def main():
             print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}'.format(
                     args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP), flush=True)
             print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}'.format(
-                    args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP,), flush=True, file=logfile)
+                    args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP), flush=True, file=logfile)
 
     logfile.close()
 

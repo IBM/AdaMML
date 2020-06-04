@@ -385,8 +385,7 @@ class PolicyNet(nn.Module):
     @property
     def network_name(self):
         name = 'j_mobilenet_v2{}-{}'.format('-' + self.causality_modeling
-                                            if self.causality_modeling else '',
-                                            'hard' if self.hard_gumbel else 'soft')
+                                            if self.causality_modeling else '')
         if self.causality_modeling == 'lstm':
             if self.lstm_num_layers > 1:
                 name += '-{}'.format(self.lstm_num_layers)

@@ -68,7 +68,7 @@ def main_worker(gpu, ngpus_per_node, args):
     args.datadir = args.datadir[0]
     args.modality = args.modality[0]
 
-    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file, multilabel = get_dataset_config(args.dataset)
+    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file = get_dataset_config(args.dataset)
     args.num_classes = num_classes
 
     if args.gpu is not None:
@@ -187,14 +187,9 @@ def main_worker(gpu, ngpus_per_node, args):
             print("=> creating model '{}'".format(arch_name))
 
     # define loss function (criterion) and optimizer
-    if multilabel:
-        train_criterion = nn.BCEWithLogitsLoss().cuda(args.gpu)
-        val_criterion = nn.BCEWithLogitsLoss().cuda(args.gpu)
-        eval_criterion = actnet_acc
-    else:
-        train_criterion = nn.CrossEntropyLoss().cuda(args.gpu)
-        val_criterion = nn.CrossEntropyLoss().cuda(args.gpu)
-        eval_criterion = accuracy
+    train_criterion = nn.CrossEntropyLoss().cuda(args.gpu)
+    val_criterion = nn.CrossEntropyLoss().cuda(args.gpu)
+    eval_criterion = accuracy
 
     # Data loading code
     val_augmentor = get_augmentor(False, args.input_size, scale_range=args.scale_range, mean=mean, std=std, disable_scaleup=args.disable_scaleup,

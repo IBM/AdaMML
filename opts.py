@@ -31,7 +31,7 @@ def arg_parser():
     parser.add_argument('--cost_weights', default=None, type=float, nargs="+")
     parser.add_argument('--rng_policy', action='store_true', help='use rng as policy, baseline')
     parser.add_argument('--rng_threshold', type=float, default=0.5, help='rng threshold')
-    parser.add_argument('--gammas', default=None, type=float, nargs="+")
+    parser.add_argument('--gammas', default=10.0, type=float)
     parser.add_argument('--penalty_type', default='blockdrop', type=str, choices=['mean', 'blockdrop'])
 
     # training setting
@@ -39,8 +39,8 @@ def arg_parser():
     parser.add_argument('--gpu_id', help='comma separated list of GPU(s) to use.', default=None)
     parser.add_argument('--disable_cudnn_benchmark', dest='cudnn_benchmark', action='store_false',
                         help='Disable cudnn to search the best mode (avoid OOM)')
-    parser.add_argument('-b', '--batch-size', default=256, type=int,
-                        metavar='N', help='mini-batch size (default: 256)')
+    parser.add_argument('-b', '--batch-size', default=72, type=int,
+                        metavar='N', help='mini-batch size (default: 72)')
     parser.add_argument('--lr', '--learning-rate', default=0.01, type=float,
                         metavar='LR', help='initial learning rate')
     parser.add_argument('--p_lr', '--p_learning-rate', default=0.01, type=float,

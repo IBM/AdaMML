@@ -3,7 +3,6 @@ import time
 import json
 import warnings
 
-import torch.nn as nn
 from torch.nn import functional as F
 import torch.nn.parallel
 import torch.backends.cudnn as cudnn
@@ -11,15 +10,13 @@ import torch.optim
 import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
-import torchsummary
 
 from tqdm import tqdm
 
 from models import build_model
-from utils.utils import build_dataflow, extract_total_flops_params, AverageMeter, \
-    accuracy, cal_acc_map, actnet_acc
+from utils.utils import build_dataflow, AverageMeter, actnet_acc
 from utils.video_transforms import *
-from utils.video_dataset import VideoDataSet, VideoDataSetLMDB, VideoDataSetOnline
+from utils.video_dataset import VideoDataSet
 from utils.dataset_config import get_dataset_config
 from opts import arg_parser
 
@@ -69,17 +66,16 @@ def main():
     global args
     parser = arg_parser()
     args = parser.parse_args()
-    # TODO: for compatibility
     args.datadir = args.datadir[0]
     args.modality = args.modality[0]
     cudnn.benchmark = True
 
-    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file, multilabel = get_dataset_config(args.dataset, args.use_lmdb)
+    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file = get_dataset_config(args.dataset)
 
     data_list_name = val_list_name if args.evaluate else test_list_name
 
     args.num_classes = num_classes
-    if args.dataset == 'st2stv1' or args.dataset == 'activitynet':
+    if args.dataset == 'activitynet':
         id_to_label, label_to_id = load_categories(os.path.join(args.datadir, label_file))
 
     if args.gpu:
@@ -130,10 +126,6 @@ def main():
     else:
         dummy_data = (args.input_channels * num_frames, args.input_size, args.input_size)
 
-    model_summary = torchsummary.summary(model, input_size=dummy_data)
-
-    flops, params = extract_total_flops_params(model_summary)
-    flops = int(flops.replace(',', '')) * (args.num_clips * args.num_crops)
     model = torch.nn.DataParallel(model).cuda()
     if args.pretrained is not None:
         print("=> using pre-trained model '{}'".format(arch_name))
@@ -179,12 +171,7 @@ def main():
     print("Number of crops: {}".format(args.num_crops))
     print("Number of clips: {}, offset from center with {}".format(args.num_clips, sample_offsets))
 
-    if args.use_lmdb:
-        video_data_cls = VideoDataSetLMDB
-    elif args.use_pyav:
-        video_data_cls = VideoDataSetOnline
-    else:
-        video_data_cls = VideoDataSet
+    video_data_cls = VideoDataSet
     val_dataset = video_data_cls(args.datadir, data_list_name, args.groups, args.frames_per_group,
                                  num_clips=args.num_clips, modality=args.modality,
                                  num_classes=args.num_classes,
@@ -214,10 +201,7 @@ def main():
     total_outputs = 0
     outputs = torch.zeros((len(data_loader) * args.batch_size, num_classes))
     if args.evaluate:
-        if multilabel:
-            labels = torch.zeros((len(data_loader) * args.batch_size, num_classes), dtype=torch.long)
-        else:
-            labels = torch.zeros((len(data_loader) * args.batch_size), dtype=torch.long)
+        labels = torch.zeros((len(data_loader) * args.batch_size), dtype=torch.long)
     else:
         labels = [None] * len(data_loader) * args.batch_size
     # switch to evaluate mode
@@ -231,10 +215,7 @@ def main():
                                   modality=args.modality, softmax=True, threed_data=args.threed_data)
             batch_size = output.shape[0]
             outputs[total_outputs:total_outputs + batch_size, :] = output
-            if multilabel:
-                labels[total_outputs:total_outputs + batch_size, :] = label 
-            else:
-                labels[total_outputs:total_outputs + batch_size] = label 
+            labels[total_outputs:total_outputs + batch_size] = label
 
             total_outputs += video.shape[0]
             batch_time.update(time.time() - end)
@@ -277,10 +258,10 @@ def main():
             acc, mAP = actnet_acc(outputs, labels)
             top1, top5 = acc
             print(args.pretrained, file=logfile)
-            print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}\tFLOPs: {:,}\tParams:{} '.format(
-                args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP, flops, params), flush=True)
-            print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}\tFLOPs: {:,}\tParams:{} '.format(
-                args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP, flops, params), flush=True, file=logfile)
+            print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}\t'.format(
+                args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP), flush=True)
+            print('Val@{}({}) (# crops = {}, # clips = {}): \tTop@1: {:.4f}\tTop@5: {:.4f}\tmAP: {:.4f}\t'.format(
+                args.input_size, scale_size, args.num_crops, args.num_clips, top1, top5, mAP), flush=True, file=logfile)
 
     logfile.close()
 

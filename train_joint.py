@@ -1,7 +1,6 @@
 import os
 import shutil
 import time
-import numpy as np
 import sys
 import warnings
 import platform
@@ -19,7 +18,7 @@ from torch.optim import lr_scheduler
 
 from models import build_model
 from utils.utils import (train, validate, build_dataflow, get_augmentor,
-                         save_checkpoint, accuracy, actnet_acc)
+                         save_checkpoint, accuracy)
 from utils.video_dataset import MultiVideoDataSet
 from utils.dataset_config import get_dataset_config
 from opts import arg_parser
@@ -64,7 +63,7 @@ def main_worker(gpu, ngpus_per_node, args):
     cudnn.benchmark = args.cudnn_benchmark
     args.gpu = gpu
 
-    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file, multilabel = get_dataset_config(args.dataset)
+    num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, image_tmpl, filter_video, label_file = get_dataset_config(args.dataset)
     args.num_classes = num_classes
 
     if args.gpu is not None:

@@ -4,12 +4,14 @@ import math
 import torch.distributions
 import torch.nn.functional as F
 import numpy as np
+import torch.utils.model_zoo as model_zoo
+
+
 from models.common import TemporalPooling
 
 
-
 model_urls = {
-    'mobilenet_v2': './models/twod_models/adamml/policy_pretrained/mobilenetv2_160x160-64dc7fa1.pth',
+    'mobilenet_v2': 'https://github.com/d-li14/mobilenetv2.pytorch/blob/master/pretrained/mobilenetv2_160x160-64dc7fa1.pth'
 }
 
 
@@ -189,8 +191,7 @@ class MobileNetV2(nn.Module):
         return name
 
     def load_imagenet_model(self):
-        print("Load weights from {}".format(model_urls['mobilenet_v2']))
-        state_dict = torch.load(model_urls['mobilenet_v2'], map_location='cpu')
+        state_dict = model_zoo.load_url(model_urls['mobilenet_v2'], map_location='cpu')
         if self.input_channels != 3:  # convert the RGB model to others, like flow
             value = state_dict['features.0.0.weight']
             o_c, _, k_h, k_w = value.shape
@@ -217,7 +218,7 @@ class JointMobileNetV2(nn.Module):
                               input_channels=input_channels[i])
             del net.classifier
             self.last_channels.append(net.last_channel)
-            #net.load_imagenet_model()
+            net.load_imagenet_model()
             self.nets.append(net)
 
         self.avgpool = nn.AdaptiveAvgPool2d(1)

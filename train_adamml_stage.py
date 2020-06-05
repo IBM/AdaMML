@@ -189,7 +189,7 @@ def main_worker(gpu, ngpus_per_node, args):
     video_data_cls = MultiVideoDataSet
     val_dataset = video_data_cls(args.datadir, val_list_name, args.groups, args.frames_per_group,
                                  num_clips=args.val_num_clips,
-                                 num_classes=args.num_classes, whole_video=args.whole_video,
+                                 num_classes=args.num_classes, 
                                  modality=args.modality, image_tmpl=image_tmpl,
                                  dense_sampling=args.dense_sampling,
                                  transform=val_augmentors, is_train=False, test_mode=False,

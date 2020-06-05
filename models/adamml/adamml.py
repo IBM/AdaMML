@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.adamml import p_joint_mobilenet
+from models.adamml.policy_net import p_joint_mobilenet
 from models.joint_resnet_mobilenetv2 import joint_resnet_mobilenetv2
 
 __all__ = ['adamml']
@@ -133,16 +133,12 @@ class AdaMML(nn.Module):
 
 def adamml(
         # shared parameters
-        groups, modality, input_channels, num_segments, rng_policy, rng_threshold, whole_video, logits_modeling,
-        adamml_ver,
+        groups, modality, input_channels, num_segments, rng_policy, rng_threshold,
         # policy net parameters
-        p_adamml_ver, causality_modeling, hard_gumbel, single_fc, p_unimodality_pretrained, policy_net_pretrained,
-        lstm_num_layers,
+        causality_modeling,
         # main net parameters
-        num_classes, dropout_path, depth, without_t_stride, dw_conv, temporal_module_name,
-        blending_frames, blending_method, dropout, pooling_method, fusion_point,
-        unimodality_pretrained, learnable_lf_weights, learnable_lf_weights_per_class,
-        main_net_pretrained, all_resnet, **kwargs):
+        num_classes, depth, without_t_stride, dropout, pooling_method, fusion_point,
+        unimodality_pretrained, learnable_lf_weights, **kwargs):
 
     if 'rgbdiff' in modality and 'flow' in modality:
         p_modality = [x for x in modality if x != 'flow']

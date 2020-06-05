@@ -171,10 +171,8 @@ def sample_train_clip(video_length, num_consecutive_frames, num_frames, sample_f
 
 
 def sample_val_test_clip(video_length, num_consecutive_frames, num_frames, sample_freq, dense_sampling,
-                         fixed_offset, num_clips, whole_video):
+                         fixed_offset, num_clips):
     max_frame_idx = max(1, video_length - num_consecutive_frames + 1)
-    if whole_video:
-        return np.arange(1, max_frame_idx, step=sample_freq, dtype=int)
     if dense_sampling:
         if fixed_offset:
             sample_pos = max(1, 1 + max_frame_idx - sample_freq * num_frames)
@@ -257,7 +255,7 @@ class VideoDataSet(data.Dataset):
     def __init__(self, root_path, list_file, num_groups=64, frames_per_group=1, sample_offset=0, num_clips=1,
                  modality='rgb', dense_sampling=False, fixed_offset=True,
                  image_tmpl='{:05d}.jpg', transform=None, is_train=True, test_mode=False, seperator=' ',
-                 filter_video=0, num_classes=None, whole_video=False,
+                 filter_video=0, num_classes=None, 
                  fps=29.97, audio_length=1.28, resampling_rate=24000):
         """
 
@@ -279,7 +277,6 @@ class VideoDataSet(data.Dataset):
             transform: the transformer for preprocessing
             is_train (bool): shuffle the video but keep the causality
             test_mode (bool): testing mode, no label
-            whole_video (bool): take whole video
             fps (float): frame rate per second, used to localize sound when frame idx is selected.
             audio_length (float): the time window to extract audio feature.
             resampling_rate (int): used to resampling audio extracted from wav
@@ -304,7 +301,6 @@ class VideoDataSet(data.Dataset):
         self.test_mode = test_mode
         self.separator = seperator
         self.filter_video = filter_video
-        self.whole_video = whole_video
         self.fps = fps
         self.audio_length = audio_length
         self.resampling_rate = resampling_rate
@@ -374,7 +370,7 @@ class VideoDataSet(data.Dataset):
     def _get_val_indices(self, record):
         return sample_val_test_clip(record.num_frames, self.num_consecutive_frames, self.num_frames,
                                     self.sample_freq, self.dense_sampling, self.fixed_offset,
-                                    self.num_clips, self.whole_video)
+                                    self.num_clips)
 
     def __getitem__(self, index):
         """
@@ -394,14 +390,7 @@ class VideoDataSet(data.Dataset):
 
     def get_data(self, record, indices):
         images = []
-        if self.whole_video:
-            tmp = len(indices) % self.num_frames
-            if tmp != 0:
-                indices = indices[:-tmp]
-            num_clips = len(indices) // self.num_frames
-            #print(tmp, indices, self.num_frames, num_clips)
-        else:
-            num_clips = self.num_clips
+        num_clips = self.num_clips
         if self.modality == 'sound':                
             new_indices = [indices[i * self.num_frames: (i + 1) * self.num_frames]
                            for i in range(num_clips)]
@@ -445,7 +434,7 @@ class MultiVideoDataSet(data.Dataset):
     def __init__(self, root_path, list_file, num_groups=64, frames_per_group=1, sample_offset=0, num_clips=1,
                  modality='rgb', dense_sampling=False, fixed_offset=True,
                  image_tmpl='{:05d}.jpg', transform=None, is_train=True, test_mode=False, seperator=' ',
-                 filter_video=0, num_classes=None, whole_video=False,
+                 filter_video=0, num_classes=None, 
                  fps=29.97, audio_length=1.28, resampling_rate=24000):
         """
         # root_path, modality and transform become list, each for one modality
@@ -476,7 +465,7 @@ class MultiVideoDataSet(data.Dataset):
                                num_groups, frames_per_group, sample_offset,
                                num_clips, modality[i], dense_sampling, fixed_offset,
                                image_tmpl, transform[i], is_train, test_mode, seperator,
-                               filter_video, num_classes, whole_video, fps, audio_length, resampling_rate)
+                               filter_video, num_classes, fps, audio_length, resampling_rate)
             video_datasets.append(tmp)
 
         self.video_datasets = video_datasets
@@ -489,7 +478,6 @@ class MultiVideoDataSet(data.Dataset):
         self.fixed_offset = fixed_offset
         self.modality = modality
         self.num_classes = num_classes
-        self.whole_video = whole_video
 
         self.video_list = video_datasets[0].video_list
         self.num_consecutive_frames = max([x.num_consecutive_frames for x in self.video_datasets])
@@ -501,7 +489,7 @@ class MultiVideoDataSet(data.Dataset):
     def _get_val_indices(self, record):
         return sample_val_test_clip(record.num_frames, self.num_consecutive_frames, self.num_frames,
                                     self.sample_freq, self.dense_sampling, self.fixed_offset,
-                                    self.num_clips, self.whole_video)
+                                    self.num_clips)
 
     def remove_data(self, idx):
         for i in range(len(self.video_datasets)):

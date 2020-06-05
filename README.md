@@ -80,7 +80,7 @@ python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamm
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality MODALITY1 MODALITY2 --datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/MODEL_MODALITY1 /PATH/TO/MODEL_MODALITY2 \
---learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn
 ```
 
 ## Testing
@@ -101,7 +101,7 @@ Note, if you encounter out of memory error, you can use smaller batch size.
  
 E.g.
 ```shell script
-python3 test.py --multiprocessing-distributed --backbone_net sound_mobilenet_v2 \
+python3 test.py --backbone_net sound_mobilenet_v2 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --modality sound \
 --datadir /PATH/TO/FOLDER --dataset DATASET --logdir LOGDIR --dense_sampling \
 --pretrained /PATH/TO/MODEL --num_clips 10
@@ -109,7 +109,7 @@ python3 test.py --multiprocessing-distributed --backbone_net sound_mobilenet_v2 
 
 ### Testing AdaMML model
 
-To test adaMML model is straight-forward, simply put `-e` in the command.
+To test adaMML model is straight-forward, simply put `-e` in the command
 
 
 

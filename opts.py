@@ -76,13 +76,12 @@ def arg_parser():
                         help='clip the total norm of gradient before update parameter')
     parser.add_argument('--curr_stage', type=str, help='set stage for staging training',
                         default='warmup', choices=['warmup', 'alternative_training', 'finetune'])
-
     # data-related
     parser.add_argument('-j', '--workers', default=18, type=int, metavar='N',
                         help='number of data loading workers (default: 4)')
     parser.add_argument('--datadir', metavar='DIR', help='path to dataset file list',
                         nargs="+", type=str)
-    parser.add_argument('--dataset', default='st2stv2',
+    parser.add_argument('--dataset', default='activitynet',
                         choices=list(DATASET_CONFIG.keys()), help='path to dataset file list')
     parser.add_argument('--threed_data', action='store_true',
                         help='load data in the layout for 3D conv')
@@ -109,13 +108,12 @@ def arg_parser():
     parser.add_argument('--audio_length', type=float, default=1.28, help='length of audio segment')
     parser.add_argument('--resampling_rate', type=float, default=24000,
                         help='resampling rate of audio data')
-
     # logging
     parser.add_argument('--logdir', default='', type=str, help='log path')
     parser.add_argument('--print-freq', default=100, type=int,
                         help='frequency to print the log during the training')
     parser.add_argument('--show_model', action='store_true', help='show model summary')
-
+    
     # for testing and validation
     parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
                         help='evaluate model on validation set')
@@ -127,8 +125,7 @@ def arg_parser():
     parser.add_argument('--pred_weights', type=float, nargs="+",
                          help='scale range for augmentor v2')
     parser.add_argument('--after_softmax', action='store_true', help="perform softmax before ensumble")
-    parser.add_argument('--lazy_eval', action='store_true', help="evaluate every 10 epochs and last 10% of epochs")
-
+    parser.add_argument('--lazy_eval', action='store_true', help="evaluate every 10 epochs and last 10 percentage of epochs")
 
     # for distributed learning, not supported yet
     parser.add_argument('--sync-bn', action='store_true',

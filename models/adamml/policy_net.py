@@ -217,7 +217,7 @@ class JointMobileNetV2(nn.Module):
                               input_channels=input_channels[i])
             del net.classifier
             self.last_channels.append(net.last_channel)
-            net.load_imagenet_model()
+            #net.load_imagenet_model()
             self.nets.append(net)
 
         self.avgpool = nn.AdaptiveAvgPool2d(1)
@@ -284,17 +284,8 @@ class PolicyNet(nn.Module):
         :param logits: NxM, N is batch size, M is number of possible choices
         :return: Nx1: the selected index
         """
-        distributions = F.gumbel_softmax(logits, tau=self.temperature, hard=self.hard_gumbel)
-        if self.hard_gumbel:
-            decisions = distributions
-        else:  # soft gumbel, needs to sample by ourselves
-            decisions = []
-            for dis in distributions:
-                p = torch.distributions.multinomial.Multinomial(1, probs=dis)
-                decisions.append(p.sample())
-            decisions = torch.stack(decisions, dim=0)
-            decisions = (decisions - distributions).detach() + distributions
-        decisions = decisions[:, -1]
+        distributions = F.gumbel_softmax(logits, tau=self.temperature)
+        decisions = distributions[:, -1]
         return decisions
 
     def set_temperature(self, temperature):
@@ -351,7 +342,7 @@ class PolicyNet(nn.Module):
         elif self.causality_modeling == 'lstm':
             all_logits = []
             decisions = []
-            h_xs, c_xs = [None] * self.lstm_num_layers, [None] * self.lstm_num_layers
+            h_xs, c_xs = None, None
             for i in range(num_segments):
                 if i == 0:
                     lstm_in = torch.cat((outs[i],
@@ -384,11 +375,8 @@ class PolicyNet(nn.Module):
 
     @property
     def network_name(self):
-        name = 'j_mobilenet_v2{}-{}'.format('-' + self.causality_modeling
+        name = 'j_mobilenet_v2{}'.format('-' + self.causality_modeling
                                             if self.causality_modeling else '')
-        if self.causality_modeling == 'lstm':
-            if self.lstm_num_layers > 1:
-                name += '-{}'.format(self.lstm_num_layers)
         return name
 
 

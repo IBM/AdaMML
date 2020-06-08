@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from models.adamml.policy_net import p_joint_mobilenet
+from models.policy_net import p_joint_mobilenet
 from models.joint_resnet_mobilenetv2 import joint_resnet_mobilenetv2
 
 __all__ = ['adamml']

@@ -575,7 +575,6 @@ def main_worker(gpu, ngpus_per_node, args):
                 train_selection = train_adamml(train_loader, model, train_criterion, optimizer,
                                                p_optimizer,
                                                epoch + 1, major_modality, display=args.print_freq,
-                                               label_smoothing=args.label_smoothing,
                                                clip_gradient=args.clip_gradient, gpu_id=args.gpu,
                                                rank=args.rank,
                                                eval_criterion=eval_criterion,

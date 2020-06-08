@@ -11,7 +11,7 @@ from models.common import TemporalPooling
 
 
 model_urls = {
-    'mobilenet_v2': 'https://github.com/d-li14/mobilenetv2.pytorch/blob/master/pretrained/mobilenetv2_160x160-64dc7fa1.pth'
+    'mobilenet_v2': 'https://raw.githubusercontent.com/d-li14/mobilenetv2.pytorch/master/pretrained/mobilenetv2_160x160-64dc7fa1.pth'
 }
 
 
@@ -285,7 +285,7 @@ class PolicyNet(nn.Module):
         :param logits: NxM, N is batch size, M is number of possible choices
         :return: Nx1: the selected index
         """
-        distributions = F.gumbel_softmax(logits, tau=self.temperature)
+        distributions = F.gumbel_softmax(logits, tau=self.temperature, hard=True)
         decisions = distributions[:, -1]
         return decisions
 

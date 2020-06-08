@@ -5,7 +5,7 @@ import torch.utils.model_zoo as model_zoo
 
 from models.common import TemporalPooling
 
-__all__ = ['resnet']
+__all__ = ['ResNet']
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',

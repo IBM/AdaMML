@@ -1,6 +1,7 @@
 # AdaMML: Adaptive Multi-Modal Learning forEfficient Video Recognition
 
-## Library Requirements
+
+## Requirements
 
 ```
 pip3 install torch torchvision librosa
@@ -38,78 +39,71 @@ Please see the help in the script.
 
 ## Training
 
-### Training Unimodality from ImageNet-pretrained weights 
+We provided the pretrained unimodality model of Kinetics-Sounds. ([rgb]() [sound]() [flow]().)
 
-```shell script
-python3 train.py --multiprocessing-distributed --backbone_net resnet -d 50 \
---groups 8 --frames_per_group 4 -b 72 -j 96 --modality MODALITY \
---datadir /PATH/TO/FOLDER --dataset DATASET --logdir LOGDIR --dense_sampling  --epochs 100 \
---augmentor_ver v2 
-```
-`MODALITY` could be one of `{rgb, rgbdiff, flow, sound}`.
+After download the models, you can use following command to train AdaMML with different combinations.
+- rgb + audio
+- rgb + flow (with rgbdiff proxy)
+- rgb + audio + flow (with rgbdiff proxy)
 
-E.g., training with `audio` modality. 
+Here is the command template:
 
-```shell script
-python3 train.py --multiprocessing-distributed --backbone_net sound_mobilenet_v2 \
---groups 8 --frames_per_group 4 -b 72 -j 96 --modality sound \
---datadir /PATH/TO/FOLDER --dataset DATASET --logdir LOGDIR --dense_sampling  --epochs 100
-```
-
-### Naive joint training
-In joint training, few things are different from the unimodality training:
- - set multiple modalities
- - set multiple data directories corresponding to the modalities
- - choose how to fuse different modalities, e.g. `logits`
- 
-E.g.
-```shell script
-python3 train_joint.py --multiprocessing-distributed --backbone_net joint_resnet_mobilenet_V2 -d 50 \
---groups 8 --frames_per_group 4 -b 72 -j 96 --modality MODALITY1 MODALITY2 \
---datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR --dense_sampling --epochs 35 \   
---fusion_point logits --learnable_lf_weights   
-```
-
-### AdaMML training
-After you trained the unimodality models separately, AdaMML will use those models in the recognition network.
-The script here is similar to Naive joint training but with few difference:
- - 
- 
 ```shell script
 python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality MODALITY1 MODALITY2 --datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/MODEL_MODALITY1 /PATH/TO/MODEL_MODALITY2 \
---learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-## Testing
+The length of the following argments depended on how many modalities you would like to include in AdaMML.
+ - `--modality`: the modalities, other augments needs to follow this order
+ - `--datadir`: the data dir for each modality
+ - `--unimodality_pretrained`: the pretrained unimodality model
 
-### multi-segment/clip testing
-This is only for `unimodality/joint training`.
+Note that, to use `rgbdiff` as a proxy, both `rgbdiff` and `flow` needs to be specified in `--modality` and their corresponding `--datadir`.
+However, you only need to provided `flow` pretrained model in the `--unimodality_pretrained`
 
-As the default evaluation in unimodality/joint training only uses `1` segment/clip, we have other scripts to perform 10 segments/clips testing. 
-(The number we reported in the paper.) 
+Here are the examples:
 
-Everything will be similar to training script and here are difference:
- - change to `test.py` or `test_joint.py` accordingly
- - add `-e` to perform evalution
- - add `--num_clips 10` to evaluate 10 clips
- - add the to-be-tested model path to `--pretrained` 
+RGB + Audio
 
-Note, if you encounter out of memory error, you can use smaller batch size. 
- 
-E.g.
 ```shell script
-python3 test.py --backbone_net sound_mobilenet_v2 \
---groups 8 --frames_per_group 4 -b 72 -j 96 --modality sound \
---datadir /PATH/TO/FOLDER --dataset DATASET --logdir LOGDIR --dense_sampling \
---pretrained /PATH/TO/MODEL --num_clips 10
+python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
+--modality rgb sound --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA --dataset DATASET --logdir LOGDIR \
+--dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/AUDIO_MODEL \
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-### Testing AdaMML model
+RGB + Flow (with rgbdiff as proxy)
 
-To test adaMML model is straight-forward, simply put `-e` in the command
+```shell script
+python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
+--modality rgb flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
+--dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/FLOW_MODEL \
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
+```
+
+RGB + Audio + Flow (with rgbdiff as proxy)
+
+```shell script
+python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
+--modality rgb sound flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
+--dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/SOUND_MODEL /PATH/TO/FLOW_MODEL \
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
+```
 
 
+## Evaluation
 
+To test adaMML model is straight-forward:
+ - add `-e` in the command
+ - use `--pretrained` for the trained model
+ - remove `--multiprocessing-distributed`

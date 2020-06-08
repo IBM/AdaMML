@@ -37,16 +37,13 @@ After that, you need to update the `utils/data_config.py` for the datasets accor
 We provided scripts in the `tools` folder to extract RGB frames, optical flow and audios from a video.
 Please see the help in the script.
 
+## Pretrained models
+
+You can find the pretrained models on Kinetics-Sounds here. ([rgb]() [sound]() [flow]()).
+
 ## Training
 
-We provided the pretrained unimodality model of Kinetics-Sounds. ([rgb]() [sound]() [flow]().)
-
-After download the models, you can use following command to train AdaMML with different combinations.
-- rgb + audio
-- rgb + flow (with rgbdiff proxy)
-- rgb + audio + flow (with rgbdiff proxy)
-
-Here is the command template:
+Here is the command template to train AdaMML:
 
 ```shell script
 python3 train_adamml_stage.py --multiprocessing-distributed --backbone_net adamml -d 50 \
@@ -65,7 +62,7 @@ The length of the following argments depended on how many modalities you would l
 Note that, to use `rgbdiff` as a proxy, both `rgbdiff` and `flow` needs to be specified in `--modality` and their corresponding `--datadir`.
 However, you only need to provided `flow` pretrained model in the `--unimodality_pretrained`
 
-Here are the examples:
+Here are the examples to train AdaMML with different combinations.
 
 RGB + Audio
 
@@ -107,3 +104,4 @@ To test adaMML model is straight-forward:
  - add `-e` in the command
  - use `--pretrained` for the trained model
  - remove `--multiprocessing-distributed`
+ - set `--val_num_clips` to test under different number of video segments

@@ -1,4 +1,4 @@
-# AdaMML: Adaptive Multi-Modal Learning forEfficient Video Recognition
+# AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition
 
 This is the official reference codes for AdaMML.
 

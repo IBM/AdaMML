@@ -150,14 +150,9 @@ def main_worker(gpu, ngpus_per_node, args):
         else:
             checkpoint = torch.load(args.pretrained, map_location='cuda:{}'.format(args.gpu))
         new_dict = checkpoint['state_dict']
-        if 'temperature' in checkpoint:
-            model.module.policy_net.set_temperature(checkpoint['temperature'])
-        else:
-            model.module.policy_net.set_temperature(5.0)
-            for _ in range(checkpoint['epoch'] - 1):
-                model.module.decay_temperature()
+        model.module.policy_net.set_temperature(checkpoint['temperature'])
         if args.rank == 0:
-            print(f"Epoch {checkpoint['epoch']}, Temperature: {model.module.policy_net.temperature}", flush=True)
+            print(f"Temperature: {model.module.policy_net.temperature}", flush=True)
 
         model.load_state_dict(new_dict, strict=False)
         del checkpoint  # dereference seems crucial
@@ -308,14 +303,7 @@ def main_worker(gpu, ngpus_per_node, args):
                 scheduler.load_state_dict(checkpoint['scheduler'])
             except:
                 pass
-            if 'temperature' in checkpoint:  # for backward compatibility
-                model.module.policy_net.set_temperature(checkpoint['temperature'])
-            else:
-                if curr_stage == 'alternative_training':
-                    model.module.policy_net.set_temperature(5.0)
-                    for _ in range(checkpoint['epoch'] - 1):
-                        model.module.decay_temperature()
-
+            model.module.policy_net.set_temperature(checkpoint['temperature'])
             if args.rank == 0:
                 print("=> loaded checkpoint '{}' (epoch {})"
                       .format(args.resume, checkpoint['epoch']))
@@ -556,12 +544,7 @@ def main_worker(gpu, ngpus_per_node, args):
                     else:
                         checkpoint = torch.load(best_model_path, map_location='cuda:{}'.format(args.gpu))
                     new_dict = checkpoint['state_dict']
-                    if 'temperature' in checkpoint:  # for backward compatibility
-                        model.module.policy_net.set_temperature(checkpoint['temperature'])
-                    else:
-                        model.module.policy_net.set_temperature(5.0)
-                        for _ in range(checkpoint['epoch']):
-                            model.module.decay_temperature()
+                    model.module.policy_net.set_temperature(checkpoint['temperature'])
                     model.load_state_dict(new_dict, strict=True)
                     del checkpoint  # dereference seems crucial
                     torch.cuda.empty_cache()

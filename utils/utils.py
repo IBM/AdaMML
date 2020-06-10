@@ -1,12 +1,9 @@
-import numpy as np
 import shutil
 import os
-import subprocess
 import time
 import multiprocessing
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.utils import clip_grad_norm_
 import torch.distributed as dist
@@ -153,137 +150,6 @@ def build_dataflow(dataset, is_train, batch_size, workers=36, is_distributed=Fal
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle,
                              num_workers=workers, pin_memory=True, sampler=sampler)
     return data_loader
-
-
-def train(data_loader, model, criterion, optimizer, epoch, display=100,
-          steps_per_epoch=99999999999, clip_gradient=None, gpu_id=None, rank=0, eval_criterion=accuracy, **kwargs):
-    batch_time = AverageMeter()
-    data_time = AverageMeter()
-    losses = AverageMeter()
-    top1 = AverageMeter()
-    top5 = AverageMeter()
-
-    # set different random see every epoch
-    if dist.is_initialized():
-        data_loader.sampler.set_epoch(epoch)
-
-    # switch to train mode
-    model.train()
-    end = time.time()
-    num_batch = 0
-    if gpu_id is None or gpu_id == 0:
-        disable_status_bar = False
-    else:
-        disable_status_bar = True
-
-    with tqdm(total=len(data_loader), disable=disable_status_bar) as t_bar:
-        for i, (images, target) in enumerate(data_loader):
-            # measure data loading time
-            data_time.update(time.time() - end)
-            # compute output
-            if gpu_id is not None:
-                if isinstance(images, list):
-                    images = [x.cuda(gpu_id, non_blocking=True) for x in images]
-                else:
-                    images = images.cuda(gpu_id, non_blocking=True)
-            output = model(images)
-            target = target.cuda(gpu_id, non_blocking=True)
-            loss = criterion(output, target)
-            # measure accuracy and record loss
-            prec1, prec5 = eval_criterion(output, target)
-            prec1 = prec1.to(device=loss.device)
-            prec5 = prec5.to(device=loss.device)
-            
-            if dist.is_initialized():
-                world_size = dist.get_world_size()
-                dist.all_reduce(prec1)
-                dist.all_reduce(prec5)
-                prec1 /= world_size
-                prec5 /= world_size
-
-            losses.update(loss.item(), target.size(0))
-            top1.update(prec1[0], target.size(0))
-            top5.update(prec5[0], target.size(0))
-            # compute gradient and do SGD step
-            loss.backward()
-
-            if clip_gradient is not None:
-                _ = clip_grad_norm_(model.parameters(), clip_gradient)
-
-            optimizer.step()
-            optimizer.zero_grad()
-
-            # measure elapsed time
-            batch_time.update(time.time() - end)
-            end = time.time()
-            if i % display == 0 and rank == 0:
-                print('Epoch: [{0}][{1}/{2}]\t'
-                      'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                      'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
-                      'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                      'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                      'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                       epoch, i, len(data_loader), batch_time=batch_time,
-                       data_time=data_time, loss=losses, top1=top1, top5=top5), flush=True)
-            num_batch += 1
-            t_bar.update(1)
-            
-            if i > steps_per_epoch:
-                break
-    torch.cuda.empty_cache()
-    return top1.avg, top5.avg, losses.avg, batch_time.avg, data_time.avg, num_batch
-
-
-def validate(data_loader, model, criterion, gpu_id=None, eval_criterion=accuracy):
-    batch_time = AverageMeter()
-    losses = AverageMeter()
-    top1 = AverageMeter()
-    top5 = AverageMeter()
-
-    # switch to evaluate mode
-    model.eval()
-    if gpu_id is None or gpu_id == 0:
-        disable_status_bar = False
-    else:
-        disable_status_bar = True
-
-    with torch.no_grad(), tqdm(total=len(data_loader), disable=disable_status_bar) as t_bar:
-        end = time.time()
-        for i, (images, target) in enumerate(data_loader):
-
-            if gpu_id is not None:
-                if isinstance(images, list):
-                    images = [x.cuda(gpu_id, non_blocking=True) for x in images]
-                else:
-                    images = images.cuda(gpu_id, non_blocking=True)
-
-            target = target.cuda(gpu_id, non_blocking=True)
-
-            # compute output
-            output = model(images)
-            loss = criterion(output, target)
-
-            # measure accuracy and record loss
-            prec1, prec5 = eval_criterion(output, target)
-            prec1 = prec1.to(device=loss.device)
-            prec5 = prec5.to(device=loss.device)
-
-            if dist.is_initialized():
-                world_size = dist.get_world_size()
-                dist.all_reduce(prec1)
-                dist.all_reduce(prec5)
-                prec1 /= world_size
-                prec5 /= world_size
-            losses.update(loss.item(), target.size(0))
-            top1.update(prec1[0], target.size(0))
-            top5.update(prec5[0], target.size(0))
-
-            # measure elapsed time
-            batch_time.update(time.time() - end)
-            end = time.time()
-            t_bar.update(1)
-    torch.cuda.empty_cache()
-    return top1.avg, top5.avg, losses.avg, batch_time.avg
 
 
 def compute_policy_loss(penalty_type, selection, cost_weights, gammas, cls_logits, cls_targets):

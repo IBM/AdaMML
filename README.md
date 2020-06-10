@@ -1,5 +1,6 @@
 # AdaMML: Adaptive Multi-Modal Learning forEfficient Video Recognition
 
+This is the official reference codes for AdaMML.
 
 ## Requirements
 
@@ -8,7 +9,7 @@ pip3 install torch torchvision librosa
 ```
 
 ## Data Preparation
-The dataloader (utils/video_dataset.py) can load videos (image sequences) stored in the following format:
+The dataloader (utils/video_dataset.py) can load RGB frames stored in the following format:
 ```
 -- dataset_dir
 ---- train.txt
@@ -32,6 +33,14 @@ path/to/video_x_folder 1 300 1
 ```
 The difference for `test.txt` is that each line will only have 3 elements (no label information).
 
+The same format is used for `optical flow` but each file (`00001.jpg`) need to be `x_00001.jpg` and `y_00001.jpg`.
+
+On the other hand, for audio data, you need to change the first elements to the path of corresponding `wav` files, like
+
+```
+path/to/audio_x.wav 1 300 1
+```
+
 After that, you need to update the `utils/data_config.py` for the datasets accordingly.
 
 We provided the scripts in the `tools` folder to extract RGB frames and audios from a video. To extract the optical flow, we use the docker image provided by [TSN](https://hub.docker.com/r/bitxiong/tsn/). 
@@ -54,7 +63,7 @@ We provided pretrained models on the Kinetics-Sounds dataset, including unimodal
 
 ## Training
 
-Here is the command template to train AdaMML:
+After downloding the unimodality pretrained models, here is the command template to train AdaMML:
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
@@ -111,8 +120,8 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 
 ## Evaluation
 
-To test adaMML model is straight-forward:
+To test AdaMML model is straight-forward, you can simply use the training command with following modifications
  - add `-e` in the command
  - use `--pretrained` for the trained model
  - remove `--multiprocessing-distributed`
- - set `--val_num_clips` to test under different number of video segments
+ - set `--val_num_clips` to test under different number of video segments (default is 10)

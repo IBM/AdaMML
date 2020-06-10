@@ -34,22 +34,23 @@ The difference for `test.txt` is that each line will only have 3 elements (no la
 
 After that, you need to update the `utils/data_config.py` for the datasets accordingly.
 
-We provided scripts in the `tools` folder to extract RGB frames, optical flow and audios from a video.
+We provided the scripts in the `tools` folder to extract RGB frames and audios from a video. To extract the optical flow, we use the docker image provided by [TSN](https://hub.docker.com/r/bitxiong/tsn/). 
+
 Please see the help in the script.
 
 ## Pretrained models
 
+We provided pretrained models on the Kinetics-Sounds dataset, including unimodality models and the AdaMML models.
+
 ### Unimodality
-You can find the pretrained models on Kinetics-Sounds here. 
- - [rgb](https://drive.google.com/file/d/1PaBa3ZCVvgkbkborB4MhPpp1qh1J2VBg/view) 
- - [audio](https://drive.google.com/file/d/1rYyGNj4adkGEWR_4MJaybo9CZxyuyryw/view) 
- - [flow](https://drive.google.com/file/d/11B4L0ukjXr2okjQo0ARJG2bqwUZph0bG/view)
+ - [rgb](https://drive.google.com/file/d/1PaBa3ZCVvgkbkborB4MhPpp1qh1J2VBg) 
+ - [audio](https://drive.google.com/file/d/1rYyGNj4adkGEWR_4MJaybo9CZxyuyryw) 
+ - [flow](https://drive.google.com/file/d/11B4L0ukjXr2okjQo0ARJG2bqwUZph0bG)
 
 ### AdaMML:
-You can find the pretrained models on Kinetics-Sounds here. 
- - [rgb+audio](https://drive.google.com/file/d/1S5A1AoRrZsI_pmb3dJAebqpHJ3AgiPZp/view) 
- - [rgb+flow with proxy]() 
- - [rgb+audio+flow with proxy]()
+ - [rgb+audio](https://drive.google.com/file/d/1S5A1AoRrZsI_pmb3dJAebqpHJ3AgiPZp) 
+ - [rgb+flow with proxy](https://drive.google.com/file/d/1gL2hj1WvCirUNkJdIKHyP79MNbPdpwa1) 
+ - [rgb+audio+flow with proxy](https://drive.google.com/file/d/1I_GzU_ODSUZ_hiqPNZ6bzQclXnaKqvmN)
 
 ## Training
 
@@ -64,7 +65,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-The length of the following argments depended on how many modalities you would like to include in AdaMML.
+The length of the following arguments depended on how many modalities you would like to include in AdaMML.
  - `--modality`: the modalities, other augments needs to follow this order
  - `--datadir`: the data dir for each modality
  - `--unimodality_pretrained`: the pretrained unimodality model

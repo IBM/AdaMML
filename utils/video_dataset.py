@@ -336,7 +336,6 @@ class VideoDataSet(data.Dataset):
         print("The number of videos is {} (with more than {} frames) "
               "(original: {})".format(num, self.filter_video, original_video_numbers), flush=True)
         assert (num > 0)
-        # TODO: a better way to check if multi-label or not
         multi_label = np.mean(np.asarray([len(x) for x in tmp])) > 4.0
         file_list = []
         for item in tmp:

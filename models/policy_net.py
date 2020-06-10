@@ -326,8 +326,6 @@ class PolicyNet(nn.Module):
             outs.append(out)
         outs = torch.stack(outs, dim=0)  # SxNxCout
 
-        # TODO: check the consistency of shape of all_logits
-
         # SxNxCout
         if self.causality_modeling is None:
             outs = outs.view((-1, outs.size(-1)))  # (SN)xC

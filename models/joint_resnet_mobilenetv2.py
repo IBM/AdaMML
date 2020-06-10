@@ -85,7 +85,6 @@ class JointResNetMobileNetV2(nn.Module):
         # multi_modalities is a list
         bs, _, _, _ = multi_modalities[0].shape
         out = []
-        #TODO: now only support 8 frames case
         for i, x in enumerate(multi_modalities):
             tmp = self.nets[i].features(x) if self.fusion_point != 'logits' else self.nets[i].forward(x)
             tmp = self.avgpool(tmp) if self.fusion_point != 'logits' else tmp

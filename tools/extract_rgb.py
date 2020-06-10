@@ -6,6 +6,7 @@ import skvideo.io
 import concurrent.futures
 import subprocess
 import glob
+from tqdm import tqdm
 
 
 def video_to_images(video, targetdir, short_side=256):
@@ -56,13 +57,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     video_list = glob.glob(args.videos_dir + '/**/*.*', recursive=True)
-
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.num_workers) as executor:
         futures = [executor.submit(video_to_images, video, args.output_dir, 256)
                    for video in video_list]
-        total_videos = len(futures)
-        for future in concurrent.futures.as_completed(futures):
-            video_id, success = future.result()
-            if not success:
-                print(f"Something wrong for {video_id}")
+        with tqdm(total=len(futures)) as t_bar:
+            for future in concurrent.futures.as_completed(futures):
+                video_id, success = future.result()
+                if not success:
+                    print(f"Something wrong for {video_id}")
+                t_bar.update()
     print("Completed")

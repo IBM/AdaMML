@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import os
 import glob
+from tqdm import tqdm
 
 
 def ffmpeg_extraction(input_video, output_sound, sample_rate):
@@ -29,8 +30,10 @@ if __name__ == '__main__':
     if not os.path.exists(args.output_dir):
         os.mkdir(args.output_dir)
 
-    for video in video_list:
-        ffmpeg_extraction(video,
-                          os.path.join(args.output_dir,
-                                       os.path.basename(video).split(".")[0] + ".wav"),
-                          args.sample_rate)
+    with tqdm(total=len(video_list)) as t_bar:
+        for video in video_list:
+            ffmpeg_extraction(video,
+                              os.path.join(args.output_dir,
+                                           os.path.basename(video).split(".")[0] + ".wav"),
+                              args.sample_rate)
+            t_bar.update()

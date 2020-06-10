@@ -52,10 +52,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('videos_dir', help='Input directory of videos with audio')
     parser.add_argument('output_dir', help='Output directory to store JPEG files')
-    parser.add_argument('--num_workers', help='Number of workers', default=8)
+    parser.add_argument('--num_workers', help='Number of workers', default=8, type=int)
     args = parser.parse_args()
 
-    video_list = glob.glob(args.videos_dir + '/**/*.*')
+    video_list = glob.glob(args.videos_dir + '/**/*.*', recursive=True)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.num_workers) as executor:
         futures = [executor.submit(video_to_images, video, args.output_dir, 256)
@@ -64,5 +64,5 @@ if __name__ == '__main__':
         for future in concurrent.futures.as_completed(futures):
             video_id, success = future.result()
             if not success:
-                print("Something wrong for {}".format(video_id))
+                print(f"Something wrong for {video_id}")
     print("Completed")

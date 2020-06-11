@@ -1,6 +1,6 @@
-# AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition
+# (Paper ID 1207) AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition
 
-This is the source codes for the submission: AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition (Paper ID: 1207).
+This is the source codes for the submission: AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition.
 
 ## Requirements
 

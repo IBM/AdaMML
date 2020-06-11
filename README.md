@@ -95,7 +95,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-RGB + Flow (with rgbdiff as proxy)
+RGB + Flow (with RGBDiff as Proxy)
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
@@ -106,7 +106,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-RGB + Audio + Flow (with rgbdiff as proxy)
+RGB + Audio + Flow (with RGBDiff as Proxy)
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \

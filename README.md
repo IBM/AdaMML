@@ -5,7 +5,7 @@ This is the source codes for the submission: AdaMML: Adaptive Multi-Modal Learni
 ## Requirements
 
 ```
-pip3 install torch torchvision librosa
+pip3 install torch torchvision librosa tqdm Pillow numpy 
 ```
 
 ## Data Preparation

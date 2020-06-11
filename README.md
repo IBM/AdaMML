@@ -91,7 +91,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb sound --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/AUDIO_MODEL \
---learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.05 --causality_modeling lstm --gammas 10.0 --sync-bn \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
@@ -102,7 +102,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/FLOW_MODEL \
---learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--learnable_lf_weights --num_segments 5 --cost_weights 1.0 1.0 --causality_modeling lstm --gammas 10.0 --sync-bn \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
@@ -113,7 +113,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb sound flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/SOUND_MODEL /PATH/TO/FLOW_MODEL \
---learnable_lf_weights --num_segments 5 --cost_weights 1.0 0.005 --causality_modeling lstm --gammas 10.0 --sync-bn \
+--learnable_lf_weights --num_segments 5 --cost_weights 0.5 0.05 0.8 --causality_modeling lstm --gammas 10.0 --sync-bn \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 

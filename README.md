@@ -1,6 +1,6 @@
 # AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition
 
-This is the official reference codes for AdaMML.
+This is the source codes for the submission: AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition (Paper ID: 1207).
 
 ## Requirements
 
@@ -52,14 +52,14 @@ Please see the help in the script.
 We provided pretrained models on the Kinetics-Sounds dataset, including unimodality models and the AdaMML models.
 
 ### Unimodality
- - [rgb](https://drive.google.com/file/d/1PaBa3ZCVvgkbkborB4MhPpp1qh1J2VBg) 
- - [audio](https://drive.google.com/file/d/1rYyGNj4adkGEWR_4MJaybo9CZxyuyryw) 
- - [flow](https://drive.google.com/file/d/11B4L0ukjXr2okjQo0ARJG2bqwUZph0bG)
+ - [RGB](https://drive.google.com/file/d/1PaBa3ZCVvgkbkborB4MhPpp1qh1J2VBg) 
+ - [Audio](https://drive.google.com/file/d/1rYyGNj4adkGEWR_4MJaybo9CZxyuyryw) 
+ - [Flow](https://drive.google.com/file/d/11B4L0ukjXr2okjQo0ARJG2bqwUZph0bG)
 
 ### AdaMML:
- - [rgb+audio](https://drive.google.com/file/d/1S5A1AoRrZsI_pmb3dJAebqpHJ3AgiPZp) 
- - [rgb+flow with proxy](https://drive.google.com/file/d/1gL2hj1WvCirUNkJdIKHyP79MNbPdpwa1) 
- - [rgb+audio+flow with proxy](https://drive.google.com/file/d/1I_GzU_ODSUZ_hiqPNZ6bzQclXnaKqvmN)
+ - [RGB + Audio](https://drive.google.com/file/d/1S5A1AoRrZsI_pmb3dJAebqpHJ3AgiPZp) 
+ - [RGB + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1gL2hj1WvCirUNkJdIKHyP79MNbPdpwa1) 
+ - [RGB + Audio + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1I_GzU_ODSUZ_hiqPNZ6bzQclXnaKqvmN)
 
 ## Training
 
@@ -95,7 +95,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-RGB + Flow (with rgbdiff as proxy)
+RGB + Flow (with RGBDiff as Proxy)
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
@@ -106,7 +106,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
 ```
 
-RGB + Audio + Flow (with rgbdiff as proxy)
+RGB + Audio + Flow (with RGBDiff as Proxy)
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \

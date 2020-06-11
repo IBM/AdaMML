@@ -7,6 +7,7 @@ For each dataset, the following fields are required:
   - filename_separator: the separator used in train/val/test list
   - image_tmpl: the template of images in the video folder
   - filter_video: the threshold to remove videos whose frame number is less than this value
+  - label_file: a file contains mapping between label index to class name
 
 Those are optional:
   - test_list_name: the filename of test list
@@ -16,46 +17,15 @@ Those are optional:
 
 
 DATASET_CONFIG = {
-    'activitynet': {
-        'num_classes': 200,
-        'train_list_name': 'train.txt',
-        'val_list_name': 'val.txt',
-        'test_list_name': 'val.txt',
-        'filename_seperator': " ",
-        'image_tmpl': 'image_{:05d}.jpg',
-        'filter_video': 0,
-        'label_file': 'categories.txt'
-    },
-    'fcvid': {
-        'num_classes': 239,
-        'train_list_name': 'train.txt',
-        'val_list_name': 'val.txt',
-        'test_list_name': 'val.txt',
-        'filename_seperator': " ",
-        'image_tmpl': 'image_{:05d}.jpg',
-        'filter_video': 0,
-        'label_file': 'categories.txt'
-    },
     'kinetics-sounds': {
         'num_classes': 31,
         'train_list_name': 'train.txt',
         'val_list_name': 'val.txt',
-        'test_list_name': 'val.txt',
         'filename_seperator': ";",
         'image_tmpl': '{:05d}.jpg',
         'filter_video': 0,
         'label_file': 'categories.txt'
-    },
-    'mini-sports1m': {
-        'num_classes': 487,
-        'train_list_name': 'train.txt',
-        'val_list_name': 'val.txt',
-        'test_list_name': 'val.txt',
-        'filename_seperator': ";",
-        'image_tmpl': '{:05d}.jpg',
-        'filter_video': 0,
-        'label_file': 'categories.txt'
-    }    
+    }
 }
 
 
@@ -74,7 +44,3 @@ def get_dataset_config(dataset):
 
     return num_classes, train_list_name, val_list_name, test_list_name, filename_seperator, \
            image_tmpl, filter_video, label_file
-
-
-if __name__ == "__main__":
-    print(get_dataset_config('activitynet'))

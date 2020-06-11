@@ -122,6 +122,17 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 
 To test AdaMML model is straight-forward, you can simply use the training command with following modifications
  - add `-e` in the command
- - use `--pretrained` to load the trained model
+ - use `--pretrained /PATH/TO/MODEL` to load the trained model
  - remove `--multiprocessing-distributed` and `--unimodality_pretrained`
- - set `--val_num_clips` to test under different number of video segments (default is 10)
+ - set `--val_num_clips` if you would like to test under different number of video segments (default is 10)
+
+Here is command template: (also removing unncessary options)
+
+```shell script
+python3 train.py -e --backbone_net adamml -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 \
+--modality MODALITY1 MODALITY2 --datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR \
+--dense_sampling --fusion_point logits --pretrained /PATH/TO/ADAMML_MODEL \
+--learnable_lf_weights --num_segments 5 --causality_modeling lstm --sync-bn
+```
+

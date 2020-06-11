@@ -5,7 +5,6 @@ import numpy as np
 import sys
 import warnings
 import platform
-import copy
 
 import torch
 import torch.nn as nn
@@ -20,7 +19,7 @@ from torch.optim import lr_scheduler
 
 from models import build_model
 from utils.utils import (build_dataflow, get_augmentor,
-                         save_checkpoint, accuracy, actnet_acc,
+                         save_checkpoint, accuracy,
                          train_adamml, validate_adamml)
 from utils.video_dataset import MultiVideoDataSet
 from utils.dataset_config import get_dataset_config

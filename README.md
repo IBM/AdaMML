@@ -6,7 +6,7 @@ Rameswar Panda*, Chun-Fu (Richard) Chen*, Quanfu Fan, Ximeng Sun, Kate Saenko, A
 
 If you use the codes and models from this repo, please cite our work. Thanks!
 
-```shell script
+```
 @inproceedings{panda2021adamml,
     title={{AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition}},
     author={Panda, Rameswar and Chen, Chun-Fu and Fan, Quanfu and Sun, Ximeng and Saenko, Kate and Oliva, Aude and Feris, Rogerio},

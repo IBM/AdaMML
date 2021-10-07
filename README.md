@@ -1,4 +1,4 @@
-# AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition [[ArXiv]](https://arxiv.org/pdf/2105.05165.pdf) [[Project Page]](https://cvir.github.io/TCL/)
+# AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition [[ArXiv]](https://arxiv.org/pdf/2105.05165.pdf) [[Project Page]](https://rpand002.github.io/adamml.html)
 
 This repository is the official implementation of AdaMML: Adaptive Multi-Modal Learning for Efficient Video Recognition.
 

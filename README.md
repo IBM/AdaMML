@@ -54,9 +54,7 @@ path/to/audio_x.wav 1 300 1
 
 After that, you need to update the `utils/data_config.py` for the datasets accordingly.
 
-We provided the scripts in the `tools` folder to extract RGB frames and audios from a video. To extract the optical flow, we use the docker image provided by [TSN](https://hub.docker.com/r/bitxiong/tsn/). 
-
-Please see the help in the script.
+We provide the scripts in the `tools` folder to extract RGB frames and audios from a video. To extract the optical flow, we use the docker image provided by [TSN](https://hub.docker.com/r/bitxiong/tsn/). Please see the help in the script.
 
 ## Pretrained models
 

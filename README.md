@@ -63,7 +63,7 @@ Please see the help in the script.
 
 ## Pretrained models
 
-We provided the pretrained models on the Kinetics-Sounds dataset, including the unimodality models and our AdaMML models. You can find all the models [here] (https://github.com/IBM/AdaMML/releases/tag/weights-v0.1)
+We provide the pretrained models on the Kinetics-Sounds dataset, including the unimodality models and our AdaMML models. You can find all the models [here](https://github.com/IBM/AdaMML/releases/tag/weights-v0.1)
 
 ## Training
 

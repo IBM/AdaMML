@@ -119,7 +119,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 
 ## Evaluation
 
-To test AdaMML model is straight-forward, you can simply use the training command with following modifications
+Testing an AdaMML model is very straight-forward, you can simply use the training command with following modifications:
  - add `-e` in the command
  - use `--pretrained /PATH/TO/MODEL` to load the trained model
  - remove `--multiprocessing-distributed` and `--unimodality_pretrained`

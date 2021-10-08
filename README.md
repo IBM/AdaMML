@@ -63,17 +63,7 @@ Please see the help in the script.
 
 ## Pretrained models
 
-We provided pretrained models on the Kinetics-Sounds dataset, including unimodality models and the AdaMML models.
-
-### Unimodality
- - [RGB](https://drive.google.com/file/d/1PaBa3ZCVvgkbkborB4MhPpp1qh1J2VBg) 
- - [Audio](https://drive.google.com/file/d/1rYyGNj4adkGEWR_4MJaybo9CZxyuyryw) 
- - [Flow](https://drive.google.com/file/d/11B4L0ukjXr2okjQo0ARJG2bqwUZph0bG)
-
-### AdaMML:
- - [RGB + Audio](https://drive.google.com/file/d/1S5A1AoRrZsI_pmb3dJAebqpHJ3AgiPZp) 
- - [RGB + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1gL2hj1WvCirUNkJdIKHyP79MNbPdpwa1) 
- - [RGB + Audio + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1I_GzU_ODSUZ_hiqPNZ6bzQclXnaKqvmN)
+We provided the pretrained models on the Kinetics-Sounds dataset, including the unimodality models and our AdaMML models. You can find all the models [here] (https://github.com/IBM/AdaMML/releases/tag/weights-v0.1)
 
 ## Training
 

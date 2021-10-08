@@ -14,14 +14,11 @@ If you use the codes and models from this repo, please cite our work. Thanks!
     year={2021}
 }
 ```
-
-
 ## Requirements
 
 ```
 pip3 install torch torchvision librosa tqdm Pillow numpy 
 ```
-
 ## Data Preparation
 The dataloader (utils/video_dataset.py) can load RGB frames stored in the following format:
 ```
@@ -63,7 +60,7 @@ Please see the help in the script.
 
 ## Pretrained models
 
-We provide the pretrained models on the Kinetics-Sounds dataset, including the unimodality models and our AdaMML models. You can find all the models [here](https://github.com/IBM/AdaMML/releases/tag/weights-v0.1)
+We provide the pretrained models on the Kinetics-Sounds dataset, including the unimodality models and our AdaMML models. You can find all the models [here](https://github.com/IBM/AdaMML/releases/tag/weights-v0.1).
 
 ## Training
 
@@ -130,7 +127,7 @@ To test AdaMML model is straight-forward, you can simply use the training comman
  - remove `--multiprocessing-distributed` and `--unimodality_pretrained`
  - set `--val_num_clips` if you would like to test under different number of video segments (default is 10)
 
-Here is command template: (also removing unncessary options)
+Here is command template:
 
 ```shell script
 python3 train.py -e --backbone_net adamml -d 50 \

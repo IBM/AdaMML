@@ -118,7 +118,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 
 ## Training Unimodal Models
 
-Here are the command templates to train the unimodal models:
+Here are the example commands to train the unimodal models on different datasets:
 
 RGB
 

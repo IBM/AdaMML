@@ -247,7 +247,7 @@ def resnet(depth, num_classes, without_t_stride, groups, dropout, pooling_method
     model = ResNet(depth, num_frames=groups, num_classes=num_classes,
                    without_t_stride=without_t_stride, dropout=dropout,
                    pooling_method=pooling_method, input_channels=input_channels)
-
+   
     if imagenet_pretrained:
         state_dict = model_zoo.load_url(model_urls['resnet{}'.format(depth)], map_location='cpu')
         state_dict.pop('fc.weight', None)

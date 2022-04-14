@@ -75,9 +75,9 @@ We provided pretrained models on the Kinetics-Sounds dataset, including unimodal
  - [RGB + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1gL2hj1WvCirUNkJdIKHyP79MNbPdpwa1) 
  - [RGB + Audio + Flow with RGBDiff as Proxy](https://drive.google.com/file/d/1I_GzU_ODSUZ_hiqPNZ6bzQclXnaKqvmN)
 
-## Training
+## Training AdaMML Models
 
-After downloding the unimodality pretrained models, here is the command template to train AdaMML:
+After downloding the unimodality pretrained models (see below for training instructions), here is the command template to train AdaMML:
 
 ```shell script
 python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
@@ -129,6 +129,36 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/SOUND_MODEL /PATH/TO/FLOW_MODEL \
 --learnable_lf_weights --num_segments 5 --cost_weights 0.5 0.05 0.8 --causality_modeling lstm --gammas 10.0 --sync-bn \
 --lr 0.001 --p_lr 0.01 --lr_scheduler multisteps --lr_steps 10 15
+```
+
+## Training Unimodal Models
+
+Here are the command templates to train the unimodal models:
+
+RGB
+
+```shell script
+python3 train_unimodal.py --multiprocessing-distributed --backbone_net resnet -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 60 --modality rgb \
+--datadir /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
+--dense_sampling --wd 0.0001 --augmentor_ver v2 --lr_scheduler multisteps --lr_steps 20 40 50
+```
+
+Flow
+
+```shell script
+python3 train_unimodal.py --multiprocessing-distributed --backbone_net resnet -d 50 \
+--groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 60 --modality flow \
+--datadir /PATH/TO/FLOW_DATA --dataset DATASET --logdir LOGDIR \
+--dense_sampling --wd 0.0001 --augmentor_ver v2 --lr_scheduler multisteps --lr_steps 20 40 50
+```
+
+Audio
+
+```shell script
+python3 train_unimodal.py --multiprocessing-distributed --backbone_net sound_mobilenet_v2 \
+-b 72 -j 96 --epochs 60 --modality sound --wd 0.0001 --lr_scheduler multisteps --lr_steps 20 40 50 \
+--datadir /PATH/TO/AUDIO_DATA --dataset DATASET --logdir LOGDIR
 ```
 
 

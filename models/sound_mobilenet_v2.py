@@ -2,7 +2,7 @@ from torch import nn
 import torch.utils.model_zoo as model_zoo
 import numpy as np
 
-__all__ = ['MobileNetV2']
+__all__ = ['MobileNetV2', 'sound_mobilenet_v2']
 
 
 model_urls = {

@@ -1,7 +1,9 @@
-from . import adamml
+from . import (adamml, resnet, sound_mobilenet_v2)
 
 MODEL_TABLE = {
-    'adamml': adamml
+    'adamml': adamml,
+    'resnet': resnet,
+    'sound_mobilenet_v2': sound_mobilenet_v2
 }
 
 

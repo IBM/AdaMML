@@ -158,7 +158,7 @@ Testing an AdaMML model is very straight-forward, you can simply use the trainin
 Here is command template:
 
 ```shell script
-python3 train.py -e --backbone_net adamml -d 50 \
+python3 train_adamml.py -e --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 \
 --modality MODALITY1 MODALITY2 --datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --pretrained /PATH/TO/ADAMML_MODEL \

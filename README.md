@@ -65,7 +65,7 @@ We provide the pretrained models on the Kinetics-Sounds dataset, including the u
 After downloding the unimodality pretrained models (see below for training instructions), here is the command template to train AdaMML:
 
 ```shell script
-python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+python3 train_adamml.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality MODALITY1 MODALITY2 --datadir /PATH/TO/MODALITY1 /PATH/TO/MODALITY2 --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/MODEL_MODALITY1 /PATH/TO/MODEL_MODALITY2 \
@@ -86,7 +86,7 @@ Here are the examples to train AdaMML with different combinations.
 RGB + Audio
 
 ```shell script
-python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+python3 train_adamml.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb sound --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/AUDIO_MODEL \
@@ -97,7 +97,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 RGB + Flow (with RGBDiff as Proxy)
 
 ```shell script
-python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+python3 train_adamml.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/FLOW_MODEL \
@@ -108,7 +108,7 @@ python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 RGB + Audio + Flow (with RGBDiff as Proxy)
 
 ```shell script
-python3 train.py --multiprocessing-distributed --backbone_net adamml -d 50 \
+python3 train_adamml.py --multiprocessing-distributed --backbone_net adamml -d 50 \
 --groups 8 --frames_per_group 4 -b 72 -j 96 --epochs 20 --warmup_epochs 5 --finetune_epochs 10 \
 --modality rgb sound flow rgbdiff --datadir /PATH/TO/RGB_DATA /PATH/TO/AUDIO_DATA /PATH/TO/FLOW_DATA /PATH/TO/RGB_DATA --dataset DATASET --logdir LOGDIR \
 --dense_sampling --fusion_point logits --unimodality_pretrained /PATH/TO/RGB_MODEL /PATH/TO/SOUND_MODEL /PATH/TO/FLOW_MODEL \
